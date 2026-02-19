@@ -9,7 +9,6 @@ CategoryType = Literal["Contrats", "Facture", "Photos", "Rapports",
 
 
 class FileAnalysis(BaseModel):
-    """Sortie de l'analyse des fichiers"""
     category: CategoryType
     file_name: str
     description : str = Field(..., description="Description concise pour le nom de fichier (ex: station-cocody)")
