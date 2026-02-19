@@ -27,13 +27,28 @@ class Pipeline:
 
     def check_threshold(self, filename: str, analysis: FileAnalysis):
         if analysis.confiance < settings.CONFIDENCE_THRESHOLD:
-            logger.warning(f"File {filename} is not relevant enough for categorization")
+            logger.warning(f"File {filename} is not relevant enough for categorization (confidence={analysis.confiance:.2f})")
             destination_folder = "A_verifier"
             status = "to_be_checked"
         else:
             destination_folder = analysis.category
             status = "success"
         return destination_folder, status
+
+    def write_verifier_note(self, dest_dir: str, filename: str, analysis: FileAnalysis):
+        """Écrit une note explicative quand un fichier est placé dans A_verifier/."""
+        note_path = os.path.join(dest_dir, f"{os.path.splitext(filename)[0]}_note.txt")
+        note = (
+            f"Fichier : {filename}\n"
+            f"Catégorie proposée : {analysis.category}\n"
+            f"Score de confiance : {analysis.confiance:.2f} (seuil : {settings.CONFIDENCE_THRESHOLD})\n"
+            f"Raisonnement : {analysis.raisonnement}\n"
+            f"\nAction requise : Veuillez vérifier manuellement ce fichier et le déplacer "
+            f"dans le bon dossier fanga_organised/{{categorie}}/."
+        )
+        with open(note_path, "w", encoding="utf-8") as f:
+            f.write(note)
+        logger.info(f"Note explicative créée : {note_path}")
 
     def process_file(self, filename: str):
         file_path = os.path.join(self.input_dir, filename)
@@ -51,7 +66,11 @@ class Pipeline:
             os.makedirs(dest_dir, exist_ok=True)
             shutil.move(file_path, os.path.join(dest_dir, new_filename))
 
-            return ProcessingResult (
+            # Créer une note explicative pour les fichiers à vérifier manuellement
+            if status == "to_be_checked":
+                self.write_verifier_note(dest_dir, new_filename, analysis)
+
+            return ProcessingResult(
                 original_title=filename,
                 final_title=new_filename,
                 category=analysis.category,
