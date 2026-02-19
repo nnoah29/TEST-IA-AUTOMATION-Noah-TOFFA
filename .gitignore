@@ -1,0 +1,28 @@
+# Environment
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+.qodo/
+
+# Data générée (ne pas committer les fichiers traités)
+data/fanga_organised/
+data/logs/
+# Garder fanga_inbox/ vide (juste le dossier)
+data/fanga_inbox/*
+!data/fanga_inbox/.gitkeep
+
+# Test
+test.py
