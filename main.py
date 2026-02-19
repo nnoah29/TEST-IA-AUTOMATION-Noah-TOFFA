@@ -1,14 +1,25 @@
-# This is a sample Python script. Press Maj+F10 to execute it or replace it with your code. Press Double Shift to search
-# everywhere for classes, files, tool windows, actions, and settings.
 
+import os
+from dotenv import load_dotenv
+from loguru import logger
+from src.pipeline import Pipeline
+from src.config import settings
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+load_dotenv()
 
+def main():
+    logger.info("Starting FANGA Document Processor...")
+    
+    os.makedirs(settings.INPUT_DIR, exist_ok=True)
+    os.makedirs(settings.OUTPUT_DIR, exist_ok=True)
+    
+    try:
+        pipeline = Pipeline()
+        logger.info(f"Processing files from: {settings.INPUT_DIR}")
+        pipeline.process_directory()
+        logger.info("Processing complete. Report generated.")
+    except Exception as e:
+        logger.critical(f"Pipeline execution failed: {e}")
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,14 @@
+
+pydantic-settings
+pydantic
+loguru
+pypdf
+python-docx
+openpyxl
+openai
+tenacity
+python-dotenv
+reportlab
+pillow
+google-genai
+protobuf
